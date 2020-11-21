@@ -23,15 +23,29 @@ SRC = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c\
 	  ft_strjoin.c ft_isspace.c ft_strtrim.c ft_strsplit.c ft_itoa.c\
 	  ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c\
 	  ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_lstnew.c ft_lstdelone.c\
-	  ft_lstdel.c ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_itoa_base.c ft_power.c\
-	  ft_sqrt.c ft_lstsize.c get_next_line.c ft_initial.c ft_parser.c ft_print_d.c \
-      ft_print_float.c ft_print_ou.c ft_print_s.c \
-      ft_print_xxxp.c ft_printf.c ft_switch_print.c \
-      ft_atoi.c ft_strlen.c ft_display.c ft_itoa.c \
-      ft_check_float.c ft_print_float_add.c ft_parser_add.c
+	  ft_lstdel.c ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_power.c\
+	  ft_sqrt.c ft_lstsize.c get_next_line.c\
+	  ft_itoa_sign.c\
+	  ft_itoa_base.c\
+	  ft_initial.c\
+	  ft_parser.c\
+	  ft_print_d.c\
+      ft_print_float.c\
+	  ft_print_ou.c\
+	  ft_print_s.c\
+      ft_print_xxxp.c\
+	  ft_printf.c\
+	  ft_switch_print.c\
+      ft_atoi.c\
+	  ft_strlen_pf.c\
+	  ft_display.c\
+	  ft_itoa.c\
+      ft_check_float.c\
+	  ft_print_float_add.c\
+	  ft_parser_add.c
 	  
-HEADER = libft.h
-OFILES = $(subst .c,.o,$(SRC))
+INCLUDES = ./includes/libft.h ./includes/printf.h
+# OFILES = $(subst .c,.o,$(SRC))
 FLAGS = -Wall -Wextra -Werror
 
 # ----- Colors -----
@@ -44,26 +58,62 @@ WHITE:="\033[1;37m"
 EOC:="\033[0;0m"
 # ==================
 
+# all: $(NAME)
+
+# $(NAME): $(OFILES)
+# 	@echo $(CYAN) " - Compiling $(NAME_SH)" $(EOC)
+# 	@ar rc $(NAME) $(OFILES)
+# 	@ranlib $(NAME)
+# 	@echo $(GREEN) " - OK" $(GREEN)
+
+# %.o: %.c
+# 	@echo $(PURPLE) " - Compiling $< into $@" $(EOC)
+# 	@gcc $(FLAGS) $< -c -o $@
+
+# clean:
+# 	@echo $(RED) " - Removing $(NAME_SH) object files" $(EOC)
+# 	@rm -f $(OFILES)
+
+# fclean: clean
+# 	@echo $(RED) " - Removing $(NAME_SH)" $(EOC)
+# 	@rm -f $(NAME)
+
+# re: fclean all
+
+# .PHONY: fclean clean make re
+
+
+SRCDIR	= ./srcs
+OBJDIR	= ./objs
+OBJPRINT = ./ft_printf
+
+ALL_OBJ	= $(SRC:%.c=%.o)
+OBJS	= $(addprefix $(OBJDIR)/, $(ALL_OBJ))
+
 all: $(NAME)
 
-$(NAME): $(OFILES)
+$(NAME): $(OBJS)
 	@echo $(CYAN) " - Compiling $(NAME_SH)" $(EOC)
-	@ar rc $(NAME) $(OFILES)
+	@ar rc $(NAME) $(OBJS)
 	@ranlib $(NAME)
-	@echo $(GREEN) " - OK" $(GREEN)
+	@echo $(GREEN) " - OK" $(EOC)
 
-%.o: %.c
+$(OBJDIR):
+	@mkdir -p $(OBJDIR)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(INCLUDES) | $(OBJDIR)
 	@echo $(PURPLE) " - Compiling $< into $@" $(EOC)
-	@gcc $(FLAGS) $< -c -o $@
+	@gcc $(FLAGS) -I./includes -c $< -o $@
 
 clean:
 	@echo $(RED) " - Removing $(NAME_SH) object files" $(EOC)
-	@rm -f $(OFILES)
+	@/bin/rm -rf $(OBJDIR)
+
 
 fclean: clean
 	@echo $(RED) " - Removing $(NAME_SH)" $(EOC)
-	@rm -f $(NAME)
+	@/bin/rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: fclean clean make re
+.PHONY:	all clean fclean re
